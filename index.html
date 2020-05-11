@@ -137,13 +137,11 @@
                     //jours ouvrés * nombre heures journaliers
                     //calcul jours ouvrés - du lundi au vendredi
 
-                    //var diff = moment('05-01-2020', 'MM-DD-YYYY').businessDiff(moment('05-10-2017','MM-DD-YYYY'));
-
-                // var diff = moment(deb, 'MM-DD-YYYY').businessDiff(moment(fin,'MM-DD-YYYY'));
+                 //EN COURS DE MODIFICATION
                     let dayToint=deb.day();
                     let nbJoursOuvres=0;
                      for (let i=0;i<this.nbJoursContrat;i++) {
-                         if(dayToint=!6 && dayToint!=0) {
+                         if(dayToint!=6 && dayToint!=0) {
                             nbJoursOuvres++;
                          }
                      }
