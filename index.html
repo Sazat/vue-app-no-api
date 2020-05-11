@@ -50,7 +50,7 @@
 
                         <br><br>
             
-                        <!-- au clic sur le bouton "calculer", on appelle la méthode dureeContratJours -->
+                        <!-- au clic sur le bouton "calculer", on appelle la méthode calculer -->
                         <button v-on:click="calcul" v-on:click.prevent class="btn btn-success">Calculer</button>
             
                     </div>
@@ -95,69 +95,71 @@
         <script>
 
 
-                // trois calculs à effectuer avec les données envoyées par les inputs
-                // donc on sait qu'on va utiliser du v-bind
-                // la durée des contrats des CDD en heures
-                // la durée des contrats des CDD en jours
-                // le calcul des congés acquis.
+             
 
 
             //fonction pour faire apparaître les divs de résultats quand on clique sur le bouton "calculer"    
             //donc on va utiliser le v-bind sur la div "sorties"
             
 
-var rhCalculs= new Vue ({
+            var rhCalculs= new Vue ({
 
- el: '#main',
- 
- data : {
-    dateDebut:"",
-    dateFin:"",
-    nbHeuresHebdo:0,
-    nbJoursContrat: 0,
-    nbHeuresContrat:0,
-    ETP:0,
-    nbConges:0
- },
+            el: '#main',
+            
+            data : {
+                dateDebut:"",
+                dateFin:"",
+                nbHeuresHebdo:0,
+                nbJoursContrat: 0,
+                nbHeuresContrat:0,
+                ETP:0,
+                nbConges:0
+            },
 
- methods: {
+            methods: {
 
-    calcul:function() {
-     //calcul nombre d'heures travaillées avec librairie moment
-        var deb=moment(this.dateDebut);
-        var fin=moment(this.dateFin);
-        //console.log(deb);
-        //jours ouvrés
-        // var diff = moment('05-15-2017', 'MM-DD-YYYY').businessDiff(moment('05-08-2017','MM-DD-YYYY'));
-
-       // var diff = moment(deb, 'MM-DD-YYYY').businessDiff(moment(fin,'MM-DD-YYYY'));
-        //console.log(diff);
+                calcul:function() {
+                //enregistrement des dates en objet moment
+                    var deb=moment(this.dateDebut);
+                    var fin=moment(this.dateFin);
                 
+                    
+                    
 
-        
+                //calcul nombre de jours du contrat
 
-    //calcul nombre de jours du contrat
-        this.dateDebut = new Date (this.dateDebut).getTime();
-        this.dateFin = new Date (this.dateFin).getTime();
-        
-    
-        var diff_Date = this.dateFin - this.dateDebut;
-        this.nbJoursContrat=(diff_Date/ (1000 * 3600 * 24))+1;
+                    this.nbJoursContrat=(fin.diff(deb,'day'))+1;
+                    console.log("nombre de jours de contrat " +this.nbJoursContrat);
 
-    
 
-        
-      
+                
+                //calcul nombre d'heures du contrat
+                    //jours ouvrés * nombre heures journaliers
+                    //calcul jours ouvrés - du lundi au vendredi
 
-    //calcul nombre de jours de congés
-        this.nbConges=Math.ceil((this.nbJoursContrat/28)*2.08);
-        console.log(this.nbConges);
-    },
+                    //var diff = moment('05-01-2020', 'MM-DD-YYYY').businessDiff(moment('05-10-2017','MM-DD-YYYY'));
 
-   
+                // var diff = moment(deb, 'MM-DD-YYYY').businessDiff(moment(fin,'MM-DD-YYYY'));
+                    let dayToint=deb.day();
+                    let nbJoursOuvres=0;
+                     for (let i=0;i<this.nbJoursContrat;i++) {
+                         if(dayToint=!6 && dayToint!=0) {
+                            nbJoursOuvres++;
+                         }
+                     }
+                     console.log("nombre de jours ouvrés " +nbJoursOuvres);
+                     
+                            
 
- }
-})
+                //calcul nombre de jours de congés
+                    this.nbConges=Math.ceil((this.nbJoursContrat/28)*2.08);
+                   // console.log(this.nbConges);
+                },
+
+            
+
+            }
+            })
 
         </script>
     </body>
