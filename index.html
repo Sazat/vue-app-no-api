@@ -129,29 +129,54 @@
                 //calcul nombre de jours du contrat
 
                     this.nbJoursContrat=(fin.diff(deb,'day'))+1;
-                    console.log("nombre de jours de contrat " +this.nbJoursContrat);
 
 
-                
-                //calcul nombre d'heures du contrat
+                //---------------------------------------------------------
+                //-------------calcul nombre d'heures du contrat---------
+                //----------------------------------------------------------
+                    
                     //jours ouvrés * nombre heures journaliers
                     //calcul jours ouvrés - du lundi au vendredi
 
-                 //EN COURS DE MODIFICATION
                     let dayToint=deb.day();
-                    let nbJoursOuvres=0;
-                     for (let i=0;i<this.nbJoursContrat;i++) {
-                         if(dayToint!=6 && dayToint!=0) {
-                            nbJoursOuvres++;
-                         }
-                     }
-                     console.log("nombre de jours ouvrés " +nbJoursOuvres);
-                     
-                            
+                    let nextDay;
+                    let nbJoursOuvres=this.nbJoursContrat;
 
-                //calcul nombre de jours de congés
-                    this.nbConges=Math.ceil((this.nbJoursContrat/28)*2.08);
-                   // console.log(this.nbConges);
+                     for (let i=0;i<this.nbJoursContrat;i++) {
+                        
+                         if(dayToint==6 || dayToint==0) {
+                          nbJoursOuvres--;
+                         }
+                         nextDay=deb.add(1, 'day');
+                         dayToint=nextDay.day();
+                     }
+             
+                 //nombre heures par jour
+                 let nbHeuresJour=this.nbHeuresHebdo/5;
+
+                this.nbHeuresContrat=nbHeuresJour*nbJoursOuvres;
+
+
+                //----------------------------------------------------------
+                //------------calcul nombre de jours de congés---------------
+                //----------------------------------------------------------
+                    if(this.nbJoursContrat>28) {
+                        this.nbConges=Math.ceil((this.nbJoursContrat/28)*2.08);
+                    }
+
+                    if(this.nbConges<=25){
+                        this.nbConges=25;
+                    }
+                
+                //----------------------------------------------------------
+                //------------calcul ETP---------------
+                //----------------------------------------------------------
+                    // durée théorique annuelle de travail à temps plein 1607h pour un 35h
+                    let dureeTheoriqueAnnuelle=1607;
+
+                    this.ETP=Math.round(this.nbHeuresContrat/dureeTheoriqueAnnuelle);
+
+
                 },
 
             
