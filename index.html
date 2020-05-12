@@ -41,23 +41,41 @@
                                     min="1900-01-01" max="3000-12-31" v-model="dateFin"
                         >
                         
+                        <div v-bind:class="alert">
+                            <p>{{alertDateMessage}}</p>
+                        </div>
             
                         <label for="nbHeures">Nombre d'heures par semaine :</label>
             
                         <input type="number" step="0.5" id="nbHeures" name="nbHeures"
-                        v-model="nbHeuresHebdo"
+                        v-model="nbHeuresHebdo" 
+                        
                         >
+                        
+                        <div v-bind:class="alert">
+                            <p>{{alertHeuresHebdoMessage}}</p>
+                        </div>
 
                         <br><br>
+                        
             
                         <!-- au clic sur le bouton "calculer", on appelle la méthode calculer -->
-                        <button v-on:click="calcul" v-on:click.prevent class="btn btn-success">Calculer</button>
+                        <button  v-on:click="calcul(); calculsGo();" v-on:click.prevent class="btn btn-success">Calculer</button>
             
                     </div>
                 
         
-                 <div id="sorties">
+                 <div v-if="show" id="sorties">
                     
+                    <div id="datesEntries">
+                        <div >
+                            <p>Date de début de contrat : {{dateDebut}} </p>
+                        </div>
+                        <div>
+                            <p>Date de fin de contrat : {{dateFin}} </p>
+                        </div>
+                    </div>
+
                     <label for="nbJoursContrat">Nombre de jours du contrat :</label>
                     <div id="nbJoursContrat">
                         <p class="lead">{{nbJoursContrat}}</p>
@@ -100,25 +118,60 @@
 
             //fonction pour faire apparaître les divs de résultats quand on clique sur le bouton "calculer"    
             //donc on va utiliser le v-bind sur la div "sorties"
-            
+         
 
             var rhCalculs= new Vue ({
 
             el: '#main',
             
             data : {
+                show: false,
                 dateDebut:"",
                 dateFin:"",
-                nbHeuresHebdo:0,
+                nbHeuresHebdo:35,
                 nbJoursContrat: 0,
                 nbHeuresContrat:0,
                 ETP:0,
-                nbConges:0
+                nbConges:0,
+                alert:"validity",
+                alertDateMessage:"",
+                alertHeuresHebdoMessage:"",
+                
             },
 
             methods: {
 
+                calculsGo:function() {
+                    if(this.nbJoursContrat>365 || this.nbJoursContrat<0) {
+                        this.alert="alert alert-danger";
+                        if(this.nbJoursContrat>365) {
+                            this.alertDateMessage="Durée du contrat supérieure à un an.";
+                        }
+
+                        else {
+
+                            this.alertDateMessage="Dates incorrectes : date de sortie antérieure à date d'entrée.";
+                        }
+                    }
+
+                    else if(this.nbHeuresHebdo==0) {
+                        this.alert="alert alert-danger";
+                        this.alertHeuresHebdoMessage="Entrez le nombre d'heures";
+                    }
+
+                    else {
+                        this.show=true;
+                    }
+
+                    
+                },
+
+               
+
                 calcul:function() {
+
+
+                
                 //enregistrement des dates en objet moment
                     var deb=moment(this.dateDebut);
                     var fin=moment(this.dateFin);
@@ -164,7 +217,7 @@
                         this.nbConges=Math.ceil((this.nbJoursContrat/28)*2.08);
                     }
 
-                    if(this.nbConges<=25){
+                    if(this.nbConges>=25){
                         this.nbConges=25;
                     }
                 
@@ -173,13 +226,19 @@
                 //----------------------------------------------------------
                     // durée théorique annuelle de travail à temps plein 1607h pour un 35h
                     let dureeTheoriqueAnnuelle=1607;
-
+//ne pas arrondir
                     this.ETP=Math.round(this.nbHeuresContrat/dureeTheoriqueAnnuelle);
 
 
                 },
 
-            
+                dateFR: function(d) {
+
+                    d= new Date(d);
+                    let day=d.getDay();
+                    dateFr=moment(d, "DD-MM-YYYY");
+                    return dateFr;
+                }
 
             }
             })

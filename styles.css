@@ -1,6 +1,30 @@
 body {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    margin: 50px auto;
+    top: 0;
+    bottom:0;
+    right: 0;
+    left: 0;
     text-align: center;
 }
+
+#entrees, #sorties {
+    margin: 50px auto;
+    top: 0;
+    bottom:0;
+    right: 0;
+    left: 0;
+
+}
+#datesEntries {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+   
+}
+
 label {
     display: block;
     font: 1rem 'Fira Sans', sans-serif;
@@ -22,3 +46,8 @@ label {
       margin:0;
       padding:0;
   }
+
+.validity {
+    display:none;
+}
+
