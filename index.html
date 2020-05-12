@@ -6,7 +6,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title></title>
+        <title>Application RH</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -67,19 +67,31 @@
         
                  <div v-if="show" id="sorties">
                     
-                    <div id="datesEntries">
+                    <div id="datesEntrees">
                         <div >
-                            <p>Date de début de contrat : {{dateDebut}} </p>
+                            <p>Date de début de contrat :<br> {{dateDebut}} </p>
                         </div>
                         <div>
-                            <p>Date de fin de contrat : {{dateFin}} </p>
+                            <p>Date de fin de contrat :<br> {{dateFin}} </p>
                         </div>
+                    </div>
+
+                    <div>
+                        <p class="lead">Nombres d'heures travaillées par semaine : {{nbHeuresHebdo}}</p>
                     </div>
 
                     <label for="nbJoursContrat">Nombre de jours du contrat :</label>
                     <div id="nbJoursContrat">
                         <p class="lead">{{nbJoursContrat}}</p>
                     </div>
+
+                    <label for="nbJoursOuvres">Nombre de jours ouvrés travaillés :</label>
+                    <div id="nbJoursOuvres">
+                        <p class="lead">{{nbJoursOuvres}}</p>
+                    </div>
+
+
+
         
                     <label for="nbHeuresContrat">Nombre d'heures du contrat :</label>
                     <div id="nbHeuresContrat">
@@ -105,19 +117,12 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.25.3/moment-with-locales.min.js"></script>
         <script>
             moment().format();
-//            var moment = require('moment-business-days');
+
 
         </script>
     
         <!-- scripts vue js -->
         <script>
-
-
-             
-
-
-            //fonction pour faire apparaître les divs de résultats quand on clique sur le bouton "calculer"    
-            //donc on va utiliser le v-bind sur la div "sorties"
          
 
             var rhCalculs= new Vue ({
@@ -130,6 +135,7 @@
                 dateFin:"",
                 nbHeuresHebdo:35,
                 nbJoursContrat: 0,
+                nbJoursOuvres:0,
                 nbHeuresContrat:0,
                 ETP:0,
                 nbConges:0,
@@ -193,12 +199,12 @@
 
                     let dayToint=deb.day();
                     let nextDay;
-                    let nbJoursOuvres=this.nbJoursContrat;
+                    this.nbJoursOuvres=this.nbJoursContrat;
 
                      for (let i=0;i<this.nbJoursContrat;i++) {
                         
                          if(dayToint==6 || dayToint==0) {
-                          nbJoursOuvres--;
+                          this.nbJoursOuvres--;
                          }
                          nextDay=deb.add(1, 'day');
                          dayToint=nextDay.day();
@@ -207,7 +213,7 @@
                  //nombre heures par jour
                  let nbHeuresJour=this.nbHeuresHebdo/5;
 
-                this.nbHeuresContrat=nbHeuresJour*nbJoursOuvres;
+                this.nbHeuresContrat=nbHeuresJour*this.nbJoursOuvres;
 
 
                 //----------------------------------------------------------
@@ -226,8 +232,9 @@
                 //----------------------------------------------------------
                     // durée théorique annuelle de travail à temps plein 1607h pour un 35h
                     let dureeTheoriqueAnnuelle=1607;
-//ne pas arrondir
-                    this.ETP=Math.round(this.nbHeuresContrat/dureeTheoriqueAnnuelle);
+                    
+                    //ne pas arrondir
+                    this.ETP=(this.nbHeuresContrat/dureeTheoriqueAnnuelle).toFixed(2);
 
 
                 },
